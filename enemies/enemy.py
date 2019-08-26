@@ -1,7 +1,5 @@
 import pygame
-from pygame.constants import *
-from math import sqrt
-
+import os
 
 base_path = [(-10, 122),
              (639, 119), (649, 330), (872, 326), (868, 124), (1125, 130),
@@ -10,32 +8,34 @@ base_path = [(-10, 122),
              ]
 path_threshold = 2
 
-BASE_HEALTH = 1
-
 
 class Enemy:
-    imgs = []
 
     def __init__(self, speed, width=64, height=64):
         self.width = width
         self.height = height
         self.animation_count = 0
-        self.health = BASE_HEALTH
         self.path = base_path  # list of nodes / checkpoints for enemy to move to
         self.x = self.path[0][0]
         self.y = self.path[0][1]
         self.offset = (self.width / 2, self.height / 2)
-        self.img = None
+        self.imgs = None
         self.speed = speed
         self.path_pos = 0  # starting at the beginning of the path
 
         self.flip_x = False
         self.flip_y = False
 
-        # self.x0, self.x1, self.y0, self.y1 = (0, 0, 0, 0)
-        #
-        # self.move_counter = 0
-        # self.mdist = 0
+        self.max_health = 0
+        self.health = self.max_health
+
+        self.dying = -1
+        self.to_delete = False
+
+        self.death_img = pygame.transform.scale(
+            pygame.image.load(
+                os.path.join("game_assets", "enemies", "death.png")),
+            (64, 64))
 
     def draw(self, win):
         """
@@ -46,11 +46,30 @@ class Enemy:
         self.animation_count += 1
         if (self.animation_count // 10) >= len(self.imgs):
             self.animation_count = 0
-        self.img = self.imgs[self.animation_count // 10]
-
-        win.blit(pygame.transform.flip(self.img, self.flip_x, self.flip_y),
+        if self.health > 0:
+            img = self.imgs[self.animation_count // 10]
+        elif self.dying > 0:
+            img = self.death_img
+            self.dying -= 1
+        elif self.dying == 0:
+            img = self.death_img
+            self.to_delete = True
+        win.blit(pygame.transform.flip(img, self.flip_x, self.flip_y),
                  (self.x - self.offset[0], self.y - self.offset[1]))
+        self.draw_health_bar(win)
 
+    def draw_health_bar(self, win):
+        """
+        Draw the health bar above enemy
+        :param win: surface
+        :return: none
+        """
+        length = 50
+        hp_tick = length / self.max_health
+        bar = hp_tick * self.health
+
+        pygame.draw.rect(win, (255, 0, 0), (self.x - length/2, self.y + self.offset[1] + 5, length, 10), 0)
+        pygame.draw.rect(win, (0, 255, 0), (self.x - length/2, self.y + self.offset[1] + 5, bar, 10), 0)
 
     def collide(self, x_check, y_check):
         """
@@ -95,37 +114,16 @@ class Enemy:
             if self.x < tar_x or self.y < tar_y:
                 self.path_pos += 1
 
-    # def move_slope(self):
-    #     """
-    #     New move function that linearly interpolates between path points
-    #     :return:
-    #     """
-    #
-    #     if self.move_counter <= 0:
-    #         self.set_moveslope()
-    #
-    #     self.x = self.x1 - (self.x1-self.x0)/self.mdist * self.move_counter
-    #     self.y = self.y1 - (self.y1-self.y0)/self.mdist * self.move_counter
-    #     self.move_counter -= 1
-    #
-    # def set_moveslope(self):
-    #     self.path_pos += 1
-    #     self.x0, self.y0 = self.path[self.path_pos - 1]
-    #     self.x1, self.y1 = self.path[self.path_pos]
-    #     self.mdist = sqrt((self.x1 - self.x0) ** 2 + (self.y1 - self.y0) ** 2)
-    #     self.move_counter = self.mdist / self.speed
-    #     self.path_pos += 1
-
-    def hit(self):
+    def hit(self, damage):
         """
         Removes one health from the enemy/self.
         Returns True if enemy has no remaining health, else False
         :return: Bool
         """
-        self.health -= 1
+        self.health -= damage
         if self.health <= 0:
-            return True
-        return False
+            self.dying = 60
+            self.speed = 0
 
     def draw_path(self, win):
         """
