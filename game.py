@@ -69,13 +69,13 @@ class Game:
 
     def draw(self):
         self.win.blit(self.bg, (0,0))
-        # for p in self.clicks:
+        # for p in self.clicks:  #
         #     pygame.draw.circle(self.win, (255, 0, 0), (p[0], p[1]), 5, 0)
 
 
         for en in self.enemies:
             en.draw(self.win)
-            # en.draw_path(self.win)
+            # en.draw_path(self.win)  # debugging function to investigate paths
         pygame.display.update()
 
 

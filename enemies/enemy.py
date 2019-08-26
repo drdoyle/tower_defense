@@ -73,8 +73,7 @@ class Enemy:
 
         dirn = [tar_x - self.x, tar_y - self.y]  # basic vector
         dist_to_path = dirn[0]**2 + dirn[1]**2  # squared distance
-        if dist_to_path < path_threshold:
-            self.path_pos += 1
+
         dirn = [dirn[0]*abs(dirn[0]) / dist_to_path, dirn[1]*abs(dirn[1]) / dist_to_path]  # squared norm
         change_x = self.speed * dirn[0]
         change_y = self.speed * dirn[1]
@@ -82,6 +81,19 @@ class Enemy:
         # self.flip_y = change_y < 0  # included but never implemented, self.flip_y is always False
         self.x += change_x
         self.y += change_y
+
+        if dirn[0] >= 0 and dirn[1] >= 0:  # moving down-right
+            if self.x > tar_x or self.y > tar_y:
+                self.path_pos += 1
+        elif dirn[0] <= 0 and dirn[1] >= 0:  # moving down-left
+            if self.x < tar_x or self.y > tar_y:
+                self.path_pos += 1
+        elif dirn[0] >= 0 and dirn[1] <= 0:  # moving up-right
+            if self.x > tar_x or self.y < tar_y:
+                self.path_pos += 1
+        elif dirn[0] <= 0 and dirn[1] <= 0:  # moving up-left
+            if self.x < tar_x or self.y < tar_y:
+                self.path_pos += 1
 
     # def move_slope(self):
     #     """
