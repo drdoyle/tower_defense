@@ -48,6 +48,7 @@ class Enemy:
             self.animation_count = 0
         if self.health > 0:
             img = self.imgs[self.animation_count // 10]
+            self.draw_health_bar(win)
         elif self.dying > 0:
             img = self.death_img
             self.dying -= 1
@@ -56,7 +57,7 @@ class Enemy:
             self.to_delete = True
         win.blit(pygame.transform.flip(img, self.flip_x, self.flip_y),
                  (self.x - self.offset[0], self.y - self.offset[1]))
-        self.draw_health_bar(win)
+
 
     def draw_health_bar(self, win):
         """
