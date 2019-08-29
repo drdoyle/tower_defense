@@ -11,6 +11,12 @@ path_threshold = 2
 
 class Enemy:
 
+    imgs = []
+    death_img = pygame.transform.scale(
+        pygame.image.load(
+            os.path.join("game_assets", "enemies", "death.png")),
+        (64, 64))
+
     def __init__(self, speed, width=64, height=64):
         self.width = width
         self.height = height
@@ -19,7 +25,6 @@ class Enemy:
         self.x = self.path[0][0]
         self.y = self.path[0][1]
         self.offset = (self.width / 2, self.height / 2)
-        self.imgs = None
         self.speed = speed
         self.path_pos = 0  # starting at the beginning of the path
 
@@ -32,11 +37,6 @@ class Enemy:
         self.dying = -1
         self.to_delete = False
 
-        self.death_img = pygame.transform.scale(
-            pygame.image.load(
-                os.path.join("game_assets", "enemies", "death.png")),
-            (64, 64))
-
     def draw(self, win):
         """
         Draws the enemy with the given images
@@ -44,6 +44,7 @@ class Enemy:
         :return: None
         """
         self.animation_count += 1
+
         if (self.animation_count // 10) >= len(self.imgs):
             self.animation_count = 0
         if self.health > 0:
