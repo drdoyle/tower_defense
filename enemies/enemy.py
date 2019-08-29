@@ -6,7 +6,6 @@ base_path = [(-10, 122),
              (1132, 617), (326, 621), (332, 291), (22, 284),
              (-100, 287)  # last point is off the screen
              ]
-path_threshold = 2
 
 
 class Enemy:

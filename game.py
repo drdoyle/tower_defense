@@ -50,9 +50,9 @@ class Game:
                 if event.type == MOUSEBUTTONDOWN:
                     pass
 
-            # if time.time() - self.timer >= .50:
-            #     self.enemies.append(random.choice((En_1(speed=2), En_2(speed=1))))
-            #     self.timer = time.time()
+            # if time.time() - self.timer >= 1.50:
+            #      self.enemies.append(random.choice((En_2(speed=2), En_2(speed=2.5))))
+            #      self.timer = time.time()
 
             to_del = []
 
