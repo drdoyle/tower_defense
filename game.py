@@ -53,7 +53,7 @@ class Game:
                 if event.type == MOUSEBUTTONDOWN:
                     tower_clicked = False
                     for tw in self.towers:
-                        if tw.click(pos[0], pos[1]):
+                        if tw.click(pos):
                             tw.selected = True
                             tower_clicked = True
                             self.selected_tower = tw
