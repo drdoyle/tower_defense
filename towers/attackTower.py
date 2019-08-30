@@ -27,8 +27,7 @@ class AttackTower(PointerTower):
 
         enemy_closest.sort(key=lambda e: (self.point_x-e.x)**2 + (self.point_y-e.y)**2)
         if in_range is True:
-            self.point_at((enemy_closest[0].x-enemy_closest[0].offset[0],
-                           enemy_closest[0].y-enemy_closest[0].offset[1]))
+            self.point_at((enemy_closest[0].center_x, enemy_closest[0].center_y))
             if time.time() - self.timer >= 0.5:
                 self.timer = time.time()
                 enemy_closest[0].hit(self.damage)

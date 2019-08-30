@@ -21,8 +21,10 @@ class ArcherTowerLong(AttackTower):
     ]
 
     base_damage = 1
+    base_range = 200
+    damage_list = [0, 2, 3]
+    range_list = [0, 200, 200]
     upgrade_costs = [100, 300, 0]  # 0 at the end to signal that it can't be upgraded any further
-    range_list = [200, 400, 600]
 
     def __init__(self, x, y):
         super().__init__(x, y)

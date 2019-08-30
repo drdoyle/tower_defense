@@ -21,9 +21,11 @@ class Enemy:
         self.height = height
         self.animation_count = 0
         self.path = base_path  # list of nodes / checkpoints for enemy to move to
-        self.x = self.path[0][0]
-        self.y = self.path[0][1]
+        self.center_x = self.path[0][0]
+        self.center_y = self.path[0][1]
         self.offset = (self.width / 2, self.height / 2)
+        self.x = self.center_x - self.offset[0]
+        self.y = self.center_y - self.offset[1]
         self.speed = speed
         self.path_pos = 0  # starting at the beginning of the path
 
@@ -56,7 +58,7 @@ class Enemy:
             img = self.death_img
             self.to_delete = True
         win.blit(pygame.transform.flip(img, self.flip_x, self.flip_y),
-                 (self.x - self.offset[0], self.y - self.offset[1]))
+                 (self.x, self.y ))
 
 
     def draw_health_bar(self, win):
@@ -69,8 +71,8 @@ class Enemy:
         hp_tick = length / self.max_health
         bar = hp_tick * self.health
 
-        pygame.draw.rect(win, (255, 0, 0), (self.x - length/2, self.y + self.offset[1] + 5, length, 10), 0)
-        pygame.draw.rect(win, (0, 255, 0), (self.x - length/2, self.y + self.offset[1] + 5, bar, 10), 0)
+        pygame.draw.rect(win, (255, 0, 0), (self.center_x - length/2, self.y + self.height + 5, length, 10), 0)
+        pygame.draw.rect(win, (0, 255, 0), (self.center_x - length/2, self.y + self.height + 5, bar, 10), 0)
 
     def collide(self, x_check, y_check):
         """
@@ -79,19 +81,16 @@ class Enemy:
         :param y_check: int
         :return: Bool
         """
-        if x_check <= self.x + self.width and x_check > self.x:
-            if y_check <= self.y + self.height and y_check >= self.y:
-                return True
-        return False
+        return self.x + self.width >= x_check > self.x and self.y + self.height >= y_check >= self.y
 
     def move(self):
         """
-        Move enemy
+        Move enemy along its path accord to its speed.
         :return: None
         """
         tar_x, tar_y = self.path[self.path_pos + 1]
 
-        dirn = [tar_x - self.x, tar_y - self.y]  # basic vector
+        dirn = [tar_x - self.center_x, tar_y - self.center_y]  # basic vector
         dist_to_path = dirn[0]**2 + dirn[1]**2  # squared distance
 
         dirn = [dirn[0]*abs(dirn[0]) / dist_to_path, dirn[1]*abs(dirn[1]) / dist_to_path]  # squared norm
@@ -99,21 +98,27 @@ class Enemy:
         change_y = self.speed * dirn[1]
         self.flip_x = change_x < 0
         # self.flip_y = change_y < 0  # included but never implemented, self.flip_y is always False
-        self.x += change_x
-        self.y += change_y
+        self.update_pos(change_x, change_y)
 
         if dirn[0] >= 0 and dirn[1] >= 0:  # moving down-right
-            if self.x > tar_x or self.y > tar_y:
+            if self.center_x > tar_x or self.center_y > tar_y:
                 self.path_pos += 1
         elif dirn[0] <= 0 and dirn[1] >= 0:  # moving down-left
-            if self.x < tar_x or self.y > tar_y:
+            if self.center_x < tar_x or self.center_y > tar_y:
                 self.path_pos += 1
         elif dirn[0] >= 0 and dirn[1] <= 0:  # moving up-right
-            if self.x > tar_x or self.y < tar_y:
+            if self.center_x > tar_x or self.center_y < tar_y:
                 self.path_pos += 1
         elif dirn[0] <= 0 and dirn[1] <= 0:  # moving up-left
-            if self.x < tar_x or self.y < tar_y:
+            if self.center_x < tar_x or self.center_y < tar_y:
                 self.path_pos += 1
+
+    def update_pos(self, dx, dy):
+        self.x += dx
+        self.y += dy
+        self.center_x = self.x + self.offset[0]
+        self.center_y = self.y + self.offset[1]
+
 
     def hit(self, damage):
         """

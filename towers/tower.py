@@ -23,9 +23,11 @@ class Tower:
     # </editor-fold>
 
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
+        self.center_x = x
+        self.center_y = y
         self.offset = (self.width / 2, self.height / 2)
+        self.x = self.center_x - self.offset[0]
+        self.y = self.center_y - self.offset[1]
 
         self.level = 0
         self.selected = False
@@ -42,13 +44,13 @@ class Tower:
         :param win: Surface
         :return: None
         """
-        win.blit(self.img, (self.x - self.offset[0], self.y - self.offset[1]))
+        win.blit(self.img, (self.x, self.y))
         if self.selected is True:
             # draw range indicator
-            pygame.draw.circle(win, (0, 255, 0), (self.x, self.y), self.range, 4)
+            pygame.draw.circle(win, (0, 255, 0), (self.center_x, self.center_y), self.range, 4)
             # draw menus
-            for m in self.menu:
-                m.draw()
+            # for m in self.menu:
+            #     m.draw()
 
     def click(self, pos):
         """

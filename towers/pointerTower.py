@@ -14,8 +14,8 @@ class PointerTower(Tower):
 
     def __init__(self, x, y):
         super().__init__(x, y)
-        self.point_x = self.x
-        self.point_y = self.y - self.offset[1] + 10  # plus 10 is arbitrary
+        self.point_x = self.center_x
+        self.point_y = self.y + 10  # plus 10 is arbitrary to move it into the top border
         self.angle = 0
         self.pointer_count = 0
 
