@@ -31,7 +31,7 @@ class Tower:
 
         self.level = 0
         self.selected = False
-        self.menu = None
+        self.menu = []
         self.to_delete = False
 
         self.damage = self.base_damage
@@ -48,9 +48,8 @@ class Tower:
         if self.selected is True:
             # draw range indicator
             pygame.draw.circle(win, (0, 255, 0), (self.center_x, self.center_y), self.range, 4)
-            # draw menus
-            # for m in self.menu:
-            #     m.draw()
+            for m in self.menu:
+                m.draw(win)
 
     def click(self, pos):
         """
