@@ -3,6 +3,7 @@ import os
 from .pointerTower import PointerTower
 from .attackTower import AttackTower
 from .tower import Tower
+from menu import archerTowerMenu
 
 
 class ArcherTowerLong(AttackTower):
@@ -28,3 +29,4 @@ class ArcherTowerLong(AttackTower):
 
     def __init__(self, x, y):
         super().__init__(x, y)
+        self.menu.append(archerTowerMenu(x, y))
