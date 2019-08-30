@@ -5,12 +5,12 @@ class Tower:
     """
     Abstract class for towers to set up inheritance
     """
+    width = 64
+    height = 64
 
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.width = 64
-        self.height = 64
         self.offset = (self.width / 2, self.height / 2)
 
         self.range = 100
@@ -20,7 +20,6 @@ class Tower:
         self.level = 0
         self.selected = False
         self.menu = None
-        self.tower_imgs = []
 
     def draw(self, win):
         """
