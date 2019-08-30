@@ -2,25 +2,28 @@ import pygame
 import os
 import time
 from .pointerTower import PointerTower
+from .tower import Tower
 
 class ArcherTowerLong(PointerTower):
+
+    tower_imgs = [
+        pygame.transform.scale(
+            pygame.image.load(
+                os.path.join("game_assets", "towers", "archertower_" + str(x + 1) + ".png")),
+            (Tower.width, Tower.height)) for x in range(3)
+    ]
+    pointer_imgs = [
+        pygame.transform.scale(
+            pygame.image.load(
+                os.path.join("game_assets", "towers", "archertower_pointer_" + str(x + 1) + ".png")),
+            (PointerTower.pointer_width, PointerTower.pointer_height)) for x in range(1)
+    ]
+
     def __init__(self, x, y):
         super().__init__(x, y)
 
-        self.tower_imgs = [
-            pygame.transform.scale(
-                pygame.image.load(
-                    os.path.join("game_assets", "towers", "archertower_" + str(x+1) + ".png")),
-                (64, 64)) for x in range(3)
-            ]
-        self.pointer_imgs = [
-            pygame.transform.scale(
-                pygame.image.load(
-                    os.path.join("game_assets", "towers", "archertower_pointer_" + str(x + 1) + ".png")),
-                (32, 32)) for x in range(1)
-        ]
         self.range = 600
-        self.inRange = False  # is the tower in range of at least one enemy
+        self.inRange = False  # is t he tower in range of at least one enemy
         self.timer = time.time()
 
         self.damage = 1
