@@ -1,9 +1,10 @@
 from .pointerTower import PointerTower
 import time
 
+
 class AttackTower(PointerTower):
 
-    def __int__(self, x, y):
+    def __init__(self, x, y):
         super().__init__(x, y)
         self.timer = time.time()
 
