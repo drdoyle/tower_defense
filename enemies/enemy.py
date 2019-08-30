@@ -119,7 +119,6 @@ class Enemy:
         self.center_x = self.x + self.offset[0]
         self.center_y = self.y + self.offset[1]
 
-
     def hit(self, damage):
         """
         Removes one health from the enemy/self.
